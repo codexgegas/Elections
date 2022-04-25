@@ -3,18 +3,19 @@
 pragma solidity ^0.8.7;
 
 contract Election {
-    // Struct
+    // Model a Candidate
     struct Candidate {
         uint id;
         string name;
         uint voteCount;
     }
 
-    // Keeps track that an address voted
+    // Store accounts that have voted
     mapping(address => bool) public voters;
-    // Keeps track of candidates
+    // Store Candidates
+    // Fetch Candidate
     mapping(uint => Candidate) public candidates;
-    // Keeps track of candidates to compare ids
+    // Store Candidates Count
     uint public candidatesCount;
 
     // voted event
@@ -22,12 +23,12 @@ contract Election {
         uint indexed _candidateId
     );
 
-    function Election () public {
+    constructor ()  {
         addCandidate("Candidate 1");
         addCandidate("Candidate 2");
     }
 
-    function addCandidate (string _name) private {
+    function addCandidate (string  memory _name) private {
         candidatesCount ++;
         candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
     }
@@ -39,13 +40,13 @@ contract Election {
         // require a valid candidate
         require(_candidateId > 0 && _candidateId <= candidatesCount);
 
-        // record that candidate has voted
+        // record that voter has voted
         voters[msg.sender] = true;
 
-        // update candidate vote counter
+        // update candidate vote Count
         candidates[_candidateId].voteCount ++;
 
         // trigger voted event
-        votedEvent(_candidateId);
+        emit votedEvent(_candidateId);
     }
 }
